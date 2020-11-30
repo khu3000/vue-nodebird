@@ -20,13 +20,13 @@
             <v-card style="margin-bottom: 20px">
                 <v-container>
                     <v-subheader>팔로잉</v-subheader>
-                    <follow-list />                    
+                    <follow-list :fList="folloing" :userType="follingUser" />
                 </v-container>
             </v-card>
             <v-card style="margin-bottom: 20px">
                 <v-container>
                     <v-subheader>팔로워</v-subheader>
-                    <follow-list />                    
+                    <follow-list :fList="follwer" :userType="follwerUser"/>                    
                 </v-container>
             </v-card>
         </v-container>
@@ -45,8 +45,18 @@
                 nickname:'',
                 nicknameRules :[
                     v => !!v || '닉네임을 입력하세요'
-                ]
+                ],
+                follingUser:'type_folling',
+                follwerUser:'type_follwer'
             };
+        },
+        computed:{
+            follwer(){
+                return this.$store.state.users.follwerList;
+            },
+            folloing(){
+                return this.$store.state.users.follingList;
+            },
         },
         methods:{
             onChangeNickname(){

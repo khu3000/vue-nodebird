@@ -1,7 +1,7 @@
 export const state = () =>({
     me : null,
-    follwerList : [],
-    follingList : [],
+    follwerList : [{email:'gg@gg', nickname:'꾸리'},{email:'ggf@gg', nickname:'꾸리아빠'},{email:'ggm@gg',nickname:'꾸리엄마'}],
+    follingList : [{email:'gg@gg', nickname:'꼬미'},{email:'ggf@gg', nickname:'꾸리아빠'},{email:'ggm@gg',nickname:'꾸리엄마'}],
 });
 
 export const mutations = {
@@ -10,6 +10,14 @@ export const mutations = {
     },
     changeNickname(state, payload){
         state.me.nickname = payload.nickname;
+    },
+    removeFollwer(state, payload){
+        const idx = state.follwerList.findIndex((element) => element.email === payload.email);
+        state.follwerList.splice(idx, 1);
+    },
+    removeFolling(state, payload){
+        const idx = state.follingList.findIndex((element) => element.email === payload.email);
+        state.follingList.splice(idx, 1);
     },
 };
 
@@ -26,5 +34,11 @@ export const actions = {
     },
     changeNickname({commit}, payload){
         commit('changeNickname', payload);
+    },
+    removeFollwer({commit}, payload){
+        commit('removeFollwer', payload);
+    },
+    removeFolling({commit}, payload){
+        commit('removeFolling', payload);
     },
 }
