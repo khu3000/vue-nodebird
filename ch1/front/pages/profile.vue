@@ -20,13 +20,13 @@
             <v-card style="margin-bottom: 20px">
                 <v-container>
                     <v-subheader>팔로잉</v-subheader>
-                    <follow-list :fList="folloing" :userType="follingUser" />
+                    <follow-list :users="folloing" :userType="follingUser" />
                 </v-container>
             </v-card>
             <v-card style="margin-bottom: 20px">
                 <v-container>
                     <v-subheader>팔로워</v-subheader>
-                    <follow-list :fList="follwer" :userType="follwerUser"/>                    
+                    <follow-list :users="follwer" :userType="follwerUser"/>                    
                 </v-container>
             </v-card>
         </v-container>
@@ -64,7 +64,8 @@
                     nickname:this.nickname
                 })
             }
-        }
+        },
+        middleware : 'authenticated',
     }
 </script>
 

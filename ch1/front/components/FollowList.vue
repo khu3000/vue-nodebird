@@ -1,8 +1,8 @@
 <template>
     <v-list>
-        <v-list-item v-for="c in fList" v-bind:key="c.email">
-            <span>{{c.nickname}}</span>
-            <v-icon @click="onRemoveFollow(c)">mdi-minus-circle-outline</v-icon>
+        <v-list-item v-for="user in users" v-bind:key="user.email">
+            <span>{{user.nickname}}</span>
+            <v-icon @click="onRemoveFollow(user)">mdi-minus-circle-outline</v-icon>
         </v-list-item>
     </v-list>
 </template>
@@ -10,7 +10,7 @@
 <script>
 export default {      
     props:{
-        fList:{
+        users:{
             type : Array,
             required : true,
         },

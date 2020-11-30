@@ -73,6 +73,20 @@
                 ],
             }
         },
+        computed:{
+            me(){
+                return this.$store.state.users.me;
+            }
+        },
+        watch:{
+            me(value, oldvalue){
+                if(value){
+                    this.$router.push({
+                        path: '/',
+                    })
+                }
+            }
+        },
         methods:{
             onSubmitForm(){
                 if(this.$refs.form.validate()){
@@ -91,7 +105,8 @@
 
                 }
             }
-        }
+        },
+        middleware : 'anonymous',
     }
 </script>
 
