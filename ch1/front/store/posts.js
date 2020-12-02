@@ -3,6 +3,7 @@ export const state = () =>({
     hasMorePost : true, //다음 데이터가 있는 경우 true
 });
 
+const totalPosts = 51; //서버 max post 갯수 임시
 const limit = 10; //건당 가져올 갯수
 
 export const mutations = {
@@ -18,7 +19,8 @@ export const mutations = {
         state.mainPosts[index].comments.unshift(payload);
     },
     loadPosts(state){
-        const fakePosts = Array(limit).fill().map( v => ({
+        const diff = totalPosts - state.mainPosts.length; //아직 안 불러온 게시글 수
+        const fakePosts = Array(diff > limit ? limit : diff).fill().map( v => ({
             id : Math.random().toString(),
             user: {
                 id:1,
