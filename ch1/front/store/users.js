@@ -1,8 +1,14 @@
 export const state = () =>({
     me : null,
-    follwerList : [{email:'gg@gg', nickname:'꾸리'},{email:'ggf@gg', nickname:'꾸리아빠'},{email:'ggm@gg',nickname:'꾸리엄마'}],
-    follingList : [{email:'ggomy@gg', nickname:'꼬미'},{email:'ggf@gg', nickname:'꾸리아빠'},{email:'ggm@gg',nickname:'꾸리엄마'}],
+    follwerList : [],
+    follingList : [],
+    hasMoreFollwer : true,
+    hasMoreFollwing : true,
 });
+
+const totalFollwer = 8;
+const totalFollwing = 6;
+const limit = 3;
 
 export const mutations = {
     setMe(state, payload){
@@ -18,13 +24,31 @@ export const mutations = {
         state.follwerList.push(payload);
     },
     removeFollwer(state, payload){
-        const idx = state.follwerList.findIndex((element) => element.email === payload.email);
+        const idx = state.follwerList.findIndex((element) => element.id === payload.id);
         state.follwerList.splice(idx, 1);
     },
     removeFolling(state, payload){
-        const idx = state.follingList.findIndex((element) => element.email === payload.email);
+        const idx = state.follingList.findIndex((element) => element.id === payload.id);
         state.follingList.splice(idx, 1);
     },
+    loadFollowers(state){
+        const diff = totalFollwer - state.follwerList.length;
+        const fakeUsers = Array(diff > limit ? limit : diff).fill().map(v => ({
+            id : Math.random().toString(),
+            nickname : Math.floor(Math.random() * 1000)
+        }));
+        state.follwerList = state.follwerList.concat(fakeUsers);
+        state.hasMoreFollwer = fakeUsers.length === limit;
+    },
+    loadFollowings(state){
+        const diff = totalFollwing - state.follingList.length;
+        const fakeUsers = Array(diff > limit ? limit : diff).fill().map(v => ({
+            id : Math.random().toString(),
+            nickname : Math.floor(Math.random() * 1000)
+        }));
+        state.follingList = state.follingList.concat(fakeUsers);
+        state.hasMoreFollwing = fakeUsers.length === limit;
+    }
 };
 
 export const actions = {
@@ -52,5 +76,15 @@ export const actions = {
     },
     removeFolling({commit}, payload){
         commit('removeFolling', payload);
+    },
+    loadFollowers({commit,state}, payload){
+        if(state.hasMoreFollwer){
+            commit('loadFollowers', payload);
+        }
+    },
+    loadFollowings({commit,state}, payload){
+        if(state.hasMoreFollwing){
+            commit('loadFollowings', payload);
+        }
     },
 }

@@ -13,7 +13,7 @@
                             :rules="nicknameRules"
                             required
                         />
-                        <v-btn color="blue" type="submit">수정</v-btn>
+                        <v-btn dark color="blue" type="submit">수정</v-btn>
                     </v-container>
                 </v-form>
             </v-card>
@@ -21,12 +21,14 @@
                 <v-container>
                     <v-subheader>팔로잉</v-subheader>
                     <follow-list :users="folloing" :userType="follingUser" />
+                    <v-btn @click="loadMoreFollowings" v-if="hasMoreFollwing" dark color="blue" style="width:100%">더보기</v-btn>
                 </v-container>
             </v-card>
             <v-card style="margin-bottom: 20px">
                 <v-container>
                     <v-subheader>팔로워</v-subheader>
-                    <follow-list :users="follwer" :userType="follwerUser"/>                    
+                    <follow-list :users="follwer" :userType="follwerUser"/>    
+                    <v-btn @click="loadMoreFollowers" v-if="hasMoreFollwer" dark color="blue" style="width:100%">더보기</v-btn>                
                 </v-container>
             </v-card>
         </v-container>
@@ -57,12 +59,28 @@
             folloing(){
                 return this.$store.state.users.follingList;
             },
+            hasMoreFollwer(){
+                return this.$store.state.users.hasMoreFollwer;
+            },
+            hasMoreFollwing(){
+                return this.$store.state.users.hasMoreFollwing;
+            }
+        },
+        fetch({store}){
+            store.dispatch('users/loadFollowers');
+            store.dispatch('users/loadFollowings');
         },
         methods:{
             onChangeNickname(){
                 this.$store.dispatch('users/changeNickname', {
                     nickname:this.nickname
                 })
+            },
+            loadMoreFollowings(){
+                this.$store.dispatch('users/loadFollowings');
+            },
+            loadMoreFollowers(){
+                this.$store.dispatch('users/loadFollowers');
             }
         },
         middleware : 'authenticated',
