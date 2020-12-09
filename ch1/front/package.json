@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@nuxtjs/axios": "^5.12.3",
     "@nuxtjs/vuetify": "^1.11.2",
     "nuxt": "^2.14.7",
     "vue": "^2.6.12"
