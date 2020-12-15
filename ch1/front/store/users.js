@@ -53,15 +53,27 @@ export const mutations = {
 
 export const actions = {
     signUp({commit, state}, payload){
-        this.$axios.post('/user', {
+        this.$axios.post('http://localhost:3085/user', {
             nickname:payload.nickname,
             email:payload.email,
             password:payload.password,
+        }).then((data) => {
+            console.log(data);
+            commit('setMe', payload);
         });
-        commit('setMe', payload);
     },
     logIn({commit, state}, payload){
-        commit('setMe', payload);
+        this.$axios.post('http://localhost:3085/user/login', {
+            email:payload.email,
+            password:payload.password,
+        }, {
+            withCredentials : true //domain이 달라도 쿠키가 저장 되도록 함
+        }).then((data) => {
+            console.log(data);
+            commit('setMe', payload);
+        }).catch((err) => {
+            console.error(err);
+        })
     },
     logOut({commit, state}, payload){
         commit('setMe', null);
