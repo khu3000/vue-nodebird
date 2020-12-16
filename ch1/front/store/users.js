@@ -57,9 +57,9 @@ export const actions = {
             nickname:payload.nickname,
             email:payload.email,
             password:payload.password,
-        }).then((data) => {
-            console.log(data);
-            commit('setMe', payload);
+        }).then((res) => {
+            console.log(res);
+            commit('setMe', res.data);
         });
     },
     logIn({commit, state}, payload){
@@ -68,15 +68,22 @@ export const actions = {
             password:payload.password,
         }, {
             withCredentials : true //domain이 달라도 쿠키가 저장 되도록 함
-        }).then((data) => {
-            console.log(data);
-            commit('setMe', payload);
+        }).then((res) => {
+            console.log(res);
+            commit('setMe', res.data);
         }).catch((err) => {
             console.error(err);
         })
     },
     logOut({commit, state}, payload){
-        commit('setMe', null);
+        this.$axios.post('http://localhost:3085/user/logout', {}, {
+            withCredentials : true //domain이 달라도 쿠키가 저장 되도록 함
+        }).then((res) => {
+            console.log(res);
+            commit('setMe', null);
+        }).catch((err) => {
+            console.error(err);
+        })
     },
     changeNickname({commit}, payload){
         commit('changeNickname', payload);
