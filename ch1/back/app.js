@@ -10,8 +10,8 @@ const db = require('./models');
 const passportConfig = require('./passport');
 const userRouter = require('./routes/user');
 
-//db.sequelize.sync({force:true});
-db.sequelize.sync();
+db.sequelize.sync({force:true});
+//db.sequelize.sync();
 passportConfig();
 const app = express();
 
