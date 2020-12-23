@@ -1,6 +1,7 @@
 export const state = () =>({
     mainPosts:[],
     hasMorePost : true, //다음 데이터가 있는 경우 true
+    imagePaths: [],
 });
 
 const totalPosts = 51; //서버 max post 갯수 임시
@@ -33,6 +34,12 @@ export const mutations = {
         state.mainPosts = state.mainPosts.concat(fakePosts);
         state.hasMorePost = fakePosts.length === limit;
     },
+    concatImagePaths(state, payload) {
+        state.imagePaths = state.imagePaths.concat(payload);
+    },
+    removeImagePath(state, payload){
+        state.imagePaths.splice(payload, 1);
+    }
 };
 
 export const actions = {
@@ -55,7 +62,7 @@ export const actions = {
             withCredentials:true,
     })
         .then((res) => {
-
+            commit('concatImagePaths', res.data);
         })
         .catch(() => {
 

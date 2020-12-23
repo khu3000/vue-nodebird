@@ -6,8 +6,9 @@ exports.isLoggedIn = (req, res, next) => {
 }
 
 exports.isNotLoggedIn = (req, res, next) => {
-    if (!req.isAuthenticated()) {
-        return next();
-    }
-    return res.status(401).send('로그인한 사용자는 이용할 수 없습니다');
+    return next();
+    // if (!req.isAuthenticated()) {
+    //     return next();
+    // }
+    // return res.status(401).send('로그인한 사용자는 이용할 수 없습니다');
 }
