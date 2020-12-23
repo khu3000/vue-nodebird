@@ -9,9 +9,10 @@ const cookie = require('cookie-parser');
 const db = require('./models');
 const passportConfig = require('./passport');
 const userRouter = require('./routes/user');
+const postRouter = require('./routes/post');
 
-db.sequelize.sync({force:true});
-//db.sequelize.sync();
+//db.sequelize.sync({force:true});
+db.sequelize.sync();
 passportConfig();
 const app = express();
 
@@ -40,6 +41,7 @@ app.get('/', (req, res)=> {
 });
 
 app.use('/user', userRouter);
+app.use('/post', postRouter);
 
 
 app.listen(3085, () => {
