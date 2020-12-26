@@ -58,13 +58,6 @@ export default {
             if(this.$refs.form.validate()){
                 this.$store.dispatch('posts/add',{
                     content:this.content,
-                    user : {
-                        nickname : this.me.nickname
-                    },
-                    comments : [],
-                    images : [],
-                    id : Date.now(),
-                    createAt : Date.now(),
                 })
                 .then(() => {
                     this.content = '';

@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
         charset : 'utf8mb4',
         collate : 'utf8mb4_general_ci',
     });
-    Post.assosicate = (db) => {
+    Post.associate = (db) => {
         db.Post.belongsTo(db.User);
         db.Post.hasMany(db.Comment);
         db.Post.hasMany(db.Image);
