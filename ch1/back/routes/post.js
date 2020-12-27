@@ -57,4 +57,54 @@ router.post('/', isLoggedIn, async (req, res, next) => {
 
 });
 
+router.get('/:id/comments', async(req,res,next) => {
+    try{
+        const post = await db.Post.findOne({where:{id:req.params.id}});
+        if(!post) {
+            return res.status(404).send('포스트가 존재하지 않습니다.');
+        }
+        const comments = await db.Comment.findAll({
+            where : {
+                PostId : req.params.id,
+            },
+            include : [{
+                model:db.User,
+                attributes:['id', 'nickname'],
+            }],
+            order:[['createAt', 'ASC']], //주의 2차원 배열로 해야함, 2개 이상 조건 정렬 기준시 사용
+        })
+    }catch(err){
+        console.error(err);
+        next(err);
+    }
+})
+
+router.post('/:id/comment', isLoggedIn, async (req,res,next) => {
+    try {
+        const post = await db.Post.findOne({where:{id:req.params.id}});
+        if(!post) {
+            return res.status(404).send('포스트가 존재하지 않습니다.');
+        }
+
+        const newComment = await db.Comment.create({
+            PostId : post.id,
+            UserId : req.user.id,
+            content : req.body.content,
+        });
+
+        const comment = await db.Comment.findOne({
+            where : {
+                id: newComment.id,
+            },
+            include : [{
+                model : db.User,
+                attributes:['id', 'nickname']
+            }]
+        })
+
+    } catch (err) {
+        next(err);
+    }
+})
+
 module.exports = router;
