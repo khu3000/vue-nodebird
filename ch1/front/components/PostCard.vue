@@ -69,13 +69,18 @@ export default {
     methods:{
         onRemovePost(){
             this.$store.dispatch('posts/remove', {
-                id:this.post.id,
+                postId:this.post.id,
             });
         },
         onEditPost(){
 
         },
         onToggleComment(){
+            if(this.commentOpend) {
+                this.$store.dispatch('posts/loadComments', {
+                    postId:this.post.id,
+                });
+            }
             this.commentOpend = !this.commentOpend;
         }
 

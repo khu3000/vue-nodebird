@@ -10,6 +10,7 @@ const db = require('./models');
 const passportConfig = require('./passport');
 const userRouter = require('./routes/user');
 const postRouter = require('./routes/post');
+const postsRouter = require('./routes/posts');
 
 //db.sequelize.sync({force:true});
 db.sequelize.sync();
@@ -43,6 +44,7 @@ app.get('/', (req, res)=> {
 
 app.use('/user', userRouter);
 app.use('/post', postRouter);
+app.use('/posts', postsRouter);
 
 
 app.listen(3085, () => {

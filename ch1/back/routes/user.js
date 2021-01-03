@@ -7,6 +7,11 @@ const {isLoggedIn, isNotLoggedIn} = require('./middlewares');
 
 const router = express.Router();
 
+router.get('/', isNotLoggedIn, async (req, res, next) => {
+    const user= req.user;
+    return res.json(user);
+})
+
 router.post('/', async (req, res, next) => {
     try{
         const hash = await bcrypt.hash(req.body.password, 12);
