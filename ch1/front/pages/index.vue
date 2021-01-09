@@ -27,8 +27,12 @@
                 return this.$store.state.posts.hasMorePost;
             }
         },
-        middleware({store}){
-            store.dispatch('posts/loadPosts');
+        fetch({store}){
+            return store.dispatch('posts/loadPosts', { reset: true }); 
+            //return store.dispatch('posts/loadPosts', { reset: true });
+        },
+        asyncData() {
+            return {};
         },
         mounted(){
             window.addEventListener('scroll', this.onScroll);

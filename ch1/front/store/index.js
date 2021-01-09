@@ -1,9 +1,11 @@
-export const state = () =>({
-    hello:'vuex',
-});
+export const state = () =>({});
 
 export const mutations = {
-    BYE(state){
-        state.hello = 'index nuex';
-    }
+};
+
+export const actions = {
+    nuxtServerInit({commit, dispatch, state}, {req}){
+        console.log('nuxtServerInit');
+        return dispatch('users/loadUser');
+    },
 };

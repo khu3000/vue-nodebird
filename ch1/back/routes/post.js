@@ -41,11 +41,24 @@ router.post('/', isLoggedIn, async (req, res, next) => {
             await newPost.addHashtags((await result).map(r => r[0]));
             //db.sequelize.query('SELECT * FROM TABLE'); //쿼리 직접 입력 필요할 경우
         }
+
+        if(req.body.image) {
+            if(Array.isArray(req.body.image)){
+                await Promise.all(req.body.image.map((image) => {
+                    return db.Image.create({src:image, PostId : newPost.id});
+                }))
+            } else {
+                await db.Image.create({src:image, PostId : newPost.id});
+            }
+        }
+
         const fullPost = await db.Post.findOne({
             where : {id:newPost.id},
             include:[{  //include : 모델에 정의한 테이블 조인하여 가져오기
                 model : db.User,
                 attributes : ['id', 'nickname'], //해당 컬럼만 가져오도록 함
+            }, {
+                model : db.Image,
             }],
         })
 
@@ -121,5 +134,9 @@ router.post('/:id/comment', isLoggedIn, async (req,res,next) => {
         next(err);
     }
 })
+
+router.post('/:id/retweet', (req,res,next) =>{
+
+});
 
 module.exports = router;

@@ -12,6 +12,7 @@ const limit = 3;
 
 export const mutations = {
     setMe(state, payload){
+        console.log('setMe '+ payload);
         state.me = payload;
     },
     changeNickname(state, payload){
@@ -53,7 +54,7 @@ export const mutations = {
 
 export const actions = {
     loadUser({commit}){
-       this.$axios.get('http://localhost:3085/user', {
+       this.$axios.get('/user', {
             withCredentials:true
        })
        .then((res) => {
@@ -64,7 +65,7 @@ export const actions = {
        })
     },
     signUp({commit, state}, payload){
-        this.$axios.post('http://localhost:3085/user', {
+        this.$axios.post('/user', {
             nickname:payload.nickname,
             email:payload.email,
             password:payload.password,
@@ -74,7 +75,7 @@ export const actions = {
         });
     },
     logIn({commit, state}, payload){
-        this.$axios.post('http://localhost:3085/user/login', {
+        this.$axios.post('/user/login', {
             email:payload.email,
             password:payload.password,
         }, {
@@ -87,7 +88,7 @@ export const actions = {
         })
     },
     logOut({commit, state}, payload){
-        this.$axios.post('http://localhost:3085/user/logout', {}, {
+        this.$axios.post('/user/logout', {}, {
             withCredentials : true //domain이 달라도 쿠키가 저장 되도록 함
         }).then((res) => {
             console.log(res);

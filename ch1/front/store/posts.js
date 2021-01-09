@@ -1,3 +1,4 @@
+//import throttle from 'lodash.throttle';
 export const state = () =>({
     mainPosts:[],
     hasMorePost : true, //다음 데이터가 있는 경우 true
@@ -25,10 +26,9 @@ export const mutations = {
         state.mainPosts[index].comments = payload;
     },
     loadPosts(state, payload){
-        //const diff = totalPosts - state.mainPosts.length; //아직 안 불러온 게시글 수
-    
-        state.mainPosts = state.mainPosts.concat(fakePosts);
-        state.hasMorePost = fakePosts.length === limit;
+        console.log('mutations loadPosts' + payload);
+        state.mainPosts = state.mainPosts.concat(payload);
+        state.hasMorePost = payload.length === limit;
     },
     concatImagePaths(state, payload) {
         state.imagePaths = state.imagePaths.concat(payload);
@@ -40,9 +40,9 @@ export const mutations = {
 
 export const actions = {
     add({commit, state}, payload){
-        this.$axios.post('http://localhost:3085/post', {
+        this.$axios.post('/post', {
             content:payload.content,
-            imagePaths:state.imagePaths
+            image:state.imagePaths
         }, {
             withCredentials:true,
         })
@@ -56,7 +56,7 @@ export const actions = {
 
     }, 
     remove({commit}, payload){
-        this.$axios.delete(`http://localhost:3085/post/${payload.postId}`, {
+        this.$axios.delete(`/post/${payload.postId}`, {
             withCredentials:true
         })
         .then(()=>{
@@ -67,7 +67,7 @@ export const actions = {
         });
     },
     addComment({commit}, payload){
-        this.$axios.post(`http://localhost:3085/post/${payload.postId}/comment`, {
+        this.$axios.post(`/post/${payload.postId}/comment`, {
             content:payload.content,
         }, {
             withCredentials : true,
@@ -80,7 +80,7 @@ export const actions = {
         });
     },
     loadComments({commit, payload}){
-        this.$axios.get(`http://localhost:3085/post/${payload.postId}/comments`)
+        this.$axios.get(`/post/${payload.postId}/comments`)
         .then((res) => {
             commit('loadComments', res.data)
         })
@@ -88,25 +88,26 @@ export const actions = {
 
         })
     },
-    loadPosts({commit, state}, payload){
+    async loadPosts({commit, state}, payload){
         if(state.hasMorePost){
-            this.$axios.get(`http://localhost:3085/posts?offset=${state.mainPosts.length}&limit=10`)
+            await this.$axios.get(`/posts?offset=${state.mainPosts.length}&limit=10`)
             .then((res)=>{
                 commit('loadPosts', res.data);
             })
-            .catch(() => {
-
+            .catch((err) => {
+                console.log("loadPosts action catch");
             });
         }
     },
+
     uploadImages({commit}, payload){
-        this.$axios.post('http://localhost:3085/post/images', payload, {
+        this.$axios.post('/post/images', payload, {
             withCredentials:true,
     })
         .then((res) => {
             commit('concatImagePaths', res.data);
         })
-        .catch(() => {
+        .catch((err) => {
 
         })
     }

@@ -1,6 +1,7 @@
 <template>
     <div style="margin-bottom:20px">   
         <v-card>
+            <post-images :images="post.Images || []"></post-images>
             <v-img/>
             <v-card-title>
                 <h3><nuxt-link :to="'/user/' + post.id">{{post.User.nickname}}</nuxt-link></h3>
@@ -53,8 +54,9 @@
 
 <script>
 import CommentForm from '~/components/CommentForm';
+import PostImages from '~/components/PostImages';
 export default {
-  components: { CommentForm },
+  components: { CommentForm, PostImages },
     props:{
         post:{
             type : Object,
