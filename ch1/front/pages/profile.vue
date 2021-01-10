@@ -57,7 +57,7 @@
                 return this.$store.state.users.follwerList;
             },
             folloing(){
-                return this.$store.state.users.follingList;
+                return this.$store.state.users.follwingList;
             },
             hasMoreFollwer(){
                 return this.$store.state.users.hasMoreFollwer;
@@ -67,8 +67,8 @@
             }
         },
         fetch({store}){
-            store.dispatch('users/loadFollowers');
-            store.dispatch('users/loadFollowings');
+            store.dispatch('users/loadFollowers', {offset:0});
+            return store.dispatch('users/loadFollowings', {offset:0});
         },
         methods:{
             onChangeNickname(){

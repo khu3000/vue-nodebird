@@ -54,7 +54,7 @@ router.post('/', async (req, res, next) => {
 
                 const fullUser = await db.User.findOne({
                     where:{id:user.id},
-                    attributes: ['id', 'nickname'],
+                    attributes: ['id', 'userId', 'nickname'],
                     include : [{
                         model : db.User,
                         as : 'Followings',
@@ -126,7 +126,7 @@ router.post('/logout', isLoggedIn, (req, res) => {
 router.post('/:id/follow', isLoggedIn, async (req, res, next) => {
     try{
         const me = await db.User.findOne({
-            where : {id : req.params.id}
+            where : {id : req.user.id}
         });
         await me.addFollowing(req.params.id);
         res.send(req.params.id);
@@ -164,5 +164,39 @@ router.patch('/nickname', isLoggedIn, async (req, res, next) => {
         next(e);
     }    
 });
+
+router.get('/:id/followings', isLoggedIn, async (req,res,next) => {
+    try{
+        const user = await db.User.findOne({
+            where : {id:req.user.id}
+        });
+        const followings = await user.getFollowings({
+            attributes : ['id', 'nickname'],
+            limit:parseInt(req.query.limit || 3, 10),
+            offset:parseInt(req.query.offset || 3, 10),
+        })
+        res.json(followings);
+    }catch(e) {
+        console.error(e);
+        next(e);
+    }    
+});
+
+router.get('/:id/followers', isLoggedIn, async (req,res,next) => {
+    try{
+        const user = await db.User.findOne({
+            where : {id:req.user.id}
+        });
+        const followers = await user.getFollowers({
+            attributes : ['id', 'nickname'],
+            limit:parseInt(req.query.limit || 3, 10),
+            offset:parseInt(req.query.offset || 3, 10),
+        })
+        res.json(followers);
+    }catch(e) {
+        console.error(e);
+        next(e);
+    }    
+})
 
 module.exports = router;
