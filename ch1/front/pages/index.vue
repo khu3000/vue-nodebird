@@ -28,7 +28,7 @@
             }
         },
         fetch({store}){
-            return store.dispatch('posts/loadPosts', { reset: true }); 
+            return store.dispatch('posts/loadPosts'); 
             //return store.dispatch('posts/loadPosts', { reset: true });
         },
         asyncData() {

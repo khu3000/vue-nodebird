@@ -28,9 +28,9 @@ export const mutations = {
         const idx = state.follwerList.findIndex((element) => element.id === payload.id);
         state.follwerList.splice(idx, 1);
     },
-    removeFolling(state, payload){
-        const idx = state.follingList.findIndex((element) => element.id === payload.id);
-        state.follingList.splice(idx, 1);
+    removeFollowing(state, payload){
+        const idx = state.me.Followings.findIndex((element) => element.id === payload.userId);
+        state.me.Followings.splice(idx, 1);
     },
     loadFollowers(state){
         const diff = totalFollwer - state.follwerList.length;
@@ -49,7 +49,10 @@ export const mutations = {
         }));
         state.follingList = state.follingList.concat(fakeUsers);
         state.hasMoreFollwing = fakeUsers.length === limit;
-    }
+    },
+    following(state, payload) {
+        state.me.Followings.push({id:payload.userId})
+    }, 
 };
 
 export const actions = {
@@ -109,9 +112,9 @@ export const actions = {
     removeFollwer({commit}, payload){
         commit('removeFollwer', payload);
     },
-    removeFolling({commit}, payload){
-        commit('removeFolling', payload);
-    },
+    // removeFolling({commit}, payload){
+    //     commit('removeFolling', payload);
+    // },
     loadFollowers({commit,state}, payload){
         if(state.hasMoreFollwer){
             commit('loadFollowers', payload);
@@ -121,5 +124,31 @@ export const actions = {
         if(state.hasMoreFollwing){
             commit('loadFollowings', payload);
         }
+    },
+    following({commit}, payload){
+        this.$axios.post(`/user/${payload.userId}/follow`, {}, {
+            withCredentials:true,
+        })
+        .then((res) => {
+            commit('following', {
+                userId : payload.userId,
+            });
+        })
+        .catch((err) => {
+            console.error(err);
+        })
+    },
+    unfollow({commit}, payload){
+        this.$axios.delete(`/user/${payload.userId}/follow`, { //주의 : delete는 파라미터 순서 다름
+            withCredentials:true,
+        })
+        .then((res) => {
+            commit('removeFollowing', {
+                userId : payload.userId,
+            });
+        })
+        .catch((err) => {
+            console.error(err);
+        })
     },
 }
