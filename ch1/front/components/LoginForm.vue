@@ -31,6 +31,11 @@
             </v-container>
         </v-card>
         <v-btn @click="onLogout">로그아웃</v-btn>
+        <v-row>
+            <v-col cols="4">{{me.Followings.length}}팔로잉</v-col>
+            <v-col cols="4">{{me.Followers.length}}팔로워</v-col>
+            <v-col cols="4">{{me.Posts.length}}게시글</v-col>
+        </v-row>
     </v-container>
     </div>
 </template>

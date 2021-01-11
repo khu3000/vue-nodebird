@@ -23,19 +23,14 @@ export default {
             type : Array,
             required : true,
         },
-        userType :{
-            type : String,
+        remove :{
+            type : Function,
             required : true,
         }
     },
     methods:{
         onRemoveFollow(evt){
-            const dispatchName = this.userType === 'type_folling' ? 'removeFolling' : 'removeFollwer';
-
-            this.$store.dispatch('users/' + dispatchName, {
-                email:evt.email,
-                id:evt.id
-            })
+            this.remove(evt);
         }
     }
 }

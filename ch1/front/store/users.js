@@ -24,13 +24,17 @@ export const mutations = {
     addFollower(state, payload){
         state.follwerList.push(payload);
     },
-    removeFollwer(state, payload){
-        const idx = state.follwerList.findIndex((element) => element.id === payload.id);
+    removeFollower(state, payload){
+        let idx = state.me.Followers.findIndex((element) => element.id === payload.userId);
+        state.me.Followers.splice(idx, 1);
+        idx = state.follwerList.findIndex(v=> v.id === payload.userId);
         state.follwerList.splice(idx, 1);
     },
     removeFollowing(state, payload){
-        const idx = state.me.Followings.findIndex((element) => element.id === payload.userId);
+        let idx = state.me.Followings.findIndex((element) => element.id === payload.userId);
         state.me.Followings.splice(idx, 1);
+        idx = state.follwingList.findIndex(v=> v.id === payload.userId);
+        state.follwingList.splice(idx, 1);
     },
     loadFollowers(state, payload){
         if(payload.offset === 0 ){
@@ -116,12 +120,18 @@ export const actions = {
     addFollower({commit}, payload){
         commit('addFollower', payload);
     },
-    removeFollwer({commit}, payload){
-        commit('removeFollwer', payload);
+    removeFollower({commit}, payload){
+        return this.$axios.delete(`/user/${payload.userId}/follower`, {
+            withCredentials:true,
+        })
+        .then((res) => {
+            commit('removeFollower', payload);
+        })
+        .catch((err) => {
+            console.error(err);
+        })
     },
-    // removeFolling({commit}, payload){
-    //     commit('removeFolling', payload);
-    // },
+
     loadFollowers({commit,state}, payload){
         if(!(payload && payload.offset ===0) && !state.hasMoreFollwer) {
             return;

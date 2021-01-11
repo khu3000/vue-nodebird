@@ -20,14 +20,14 @@
             <v-card style="margin-bottom: 20px">
                 <v-container>
                     <v-subheader>팔로잉</v-subheader>
-                    <follow-list :users="folloing" :userType="follingUser" />
+                    <follow-list :users="folloing" :remove="removeFollowing" />
                     <v-btn @click="loadMoreFollowings" v-if="hasMoreFollwing" dark color="blue" style="width:100%">더보기</v-btn>
                 </v-container>
             </v-card>
             <v-card style="margin-bottom: 20px">
                 <v-container>
                     <v-subheader>팔로워</v-subheader>
-                    <follow-list :users="follwer" :userType="follwerUser"/>    
+                    <follow-list :users="follwer" :remove="removeFollower"/>    
                     <v-btn @click="loadMoreFollowers" v-if="hasMoreFollwer" dark color="blue" style="width:100%">더보기</v-btn>                
                 </v-container>
             </v-card>
@@ -81,7 +81,13 @@
             },
             loadMoreFollowers(){
                 this.$store.dispatch('users/loadFollowers');
-            }
+            },
+            removeFollowing(evt){
+                this.$store.dispatch('users/unfollow', {userId:evt.id})
+            },
+            removeFollower(evt){
+                this.$store.dispatch('users/removeFollower', {userId:evt.id})
+            },
         },
         middleware : 'authenticated',
     }
