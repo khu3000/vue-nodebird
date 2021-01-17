@@ -9,13 +9,13 @@
 <script>
     import PostCard from '~/components/PostCard'; 
 
-    export default {
+    export default {  
         components:{
             PostCard,
         },
         computed :{
-            me(){
-                return this.$store.state.users.me;
+            other(){
+                return this.$store.state.users.other;
             },
             mainPosts(){
                 return this.$store.state.posts.mainPosts;
@@ -24,8 +24,14 @@
                 return this.$store.state.posts.hasMorePost;
             }
         },
-        middleware({store}){
-            store.dispatch('posts/loadPosts');
+        fetch({store, params}){
+            return store.dispatch('posts/loadHashtagPosts', {
+                hashtag : encodeURIComponent(params.id),
+                reset : true
+            });                       
+        },
+        asyncData() {
+            return {};
         },
         mounted(){
             window.addEventListener('scroll', this.onScroll);

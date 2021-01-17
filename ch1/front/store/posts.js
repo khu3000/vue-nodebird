@@ -27,7 +27,11 @@ export const mutations = {
         state.mainPosts[index].comments = payload;
     },
     loadPosts(state, payload){
-        state.mainPosts = state.mainPosts.concat(payload);
+        if(payload.reset){
+            state.mainPosts = payload.data;
+        } else {
+            state.mainPosts = state.mainPosts.concat(payload);
+        }
         state.hasMorePost = payload.length === limit;
     },
     concatImagePaths(state, payload) {
@@ -100,20 +104,75 @@ export const actions = {
         })
     },
     loadPosts : throttle(async function({commit, state}, payload){
- 
-        if(state.hasMorePost){
-            const lastPost = state.mainPosts[state.mainPosts.length -1];
-            const res = await this.$axios.get(`/posts?lastId=${lastPost && lastPost.id}&limit=10`)
-            .then((res)=>{
-                commit('loadPosts', res.data);
+        try{
+             if(payload & payload.reset){
+                const res = await this.$axios.get(`/posts?limit=10`)
+                commit('loadPosts', {
+                    data : res.data,
+                    reset : true,
+                });
                 return;
-            })
-            .catch((err) => {
-                console.error(err);
-            });
+            }
+            if(state.hasMorePost){
+                const lastPost = state.mainPosts[state.mainPosts.length -1];
+                const res = await this.$axios.get(`/posts?lastId=${lastPost && lastPost.id}&limit=10`)
+                .then((res)=>{
+                    commit('loadPosts', {
+                        data : res.data,
+                        reset : true,
+                    });
+                    return;
+                })
+            }
+        }catch(e){
+            console.error(e);
         }
-    }, 3000),
 
+    }, 3000),
+    loadUserPosts: throttle(async function ({ commit, state }, payload) {
+        try {
+          if (payload && payload.reset) {
+            const res = await this.$axios.get(`/user/${payload.userId}/posts?limit=10`);
+            commit('loadPosts', {
+              data: res.data,
+              reset: true,
+            });
+            return;
+          }
+          if (state.hasMorePost) {
+            const lastPost = state.mainPosts[state.mainPosts.length - 1];
+            const res = await this.$axios.get(`/user/${payload.userId}/posts?lastId=${lastPost && lastPost.id}&limit=10`);
+            commit('loadPosts', {
+              data: res.data,
+            });
+            return;
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      }, 2000),
+      loadHashtagPosts: throttle(async function ({ commit, state }, payload) {
+        try {
+          if (payload && payload.reset) {
+            const res = await this.$axios.get(`/hashtag/${payload.hashtag}?limit=10`);
+            commit('loadPosts', {
+              data: res.data,
+              reset: true,
+            });
+            return;
+          }
+          if (state.hasMorePost) {
+            const lastPost = state.mainPosts[state.mainPosts.length - 1];
+            const res = await this.$axios.get(`/hashtag/${payload.hashtag}?lastId=${lastPost && lastPost.id}&limit=10`);
+            commit('loadPosts', {
+              data: res.data,
+            });
+            return;
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      }, 2000),
     uploadImages({commit}, payload){
         this.$axios.post('/post/images', payload, {
             withCredentials:true,

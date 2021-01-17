@@ -27,9 +27,8 @@
                 return this.$store.state.posts.hasMorePost;
             }
         },
-        fetch({store}){
-            return store.dispatch('posts/loadPosts'); 
-            //return store.dispatch('posts/loadPosts', { reset: true });
+        fetch({store, params}){
+            return store.dispatch('posts/loadPosts', { reset: true });
         },
         asyncData() {
             return {};

@@ -1,5 +1,6 @@
 export const state = () =>({
     me : null,
+    other : null,
     follwerList : [],
     follwingList : [],
     hasMoreFollwer : true,
@@ -12,9 +13,12 @@ const limit = 3;
 
 export const mutations = {
     setMe(state, payload){
-        console.log('setMe '+ payload);
         state.me = payload;
     },
+    setOther(state, payload){
+        console.log("other~~~~~~~~~", payload);
+        state.other = payload;
+    },    
     changeNickname(state, payload){
         state.me.nickname = payload.nickname;
     },
@@ -64,11 +68,22 @@ export const actions = {
             withCredentials:true
        })
        .then((res) => {
-        commit('setMe', res.data);
+            commit('setMe', res.data);
        })
-       .catch(() => {
-
+       .catch((err) => {
+            console.error(err);
        })
+    },
+    async loadOther({commit}, payload) {
+        try{
+            const res = await this.$axios.get(`/user/${payload.userId}`, {
+                withCredentials:true
+            });
+            commit('setOther', res.data);
+                
+        }catch(err) {
+            console.error(err);
+        }
     },
     signUp({commit, state}, payload){
         this.$axios.post('/user', {

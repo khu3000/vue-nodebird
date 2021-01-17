@@ -10,6 +10,31 @@ const router = express.Router();
 router.get('/', isNotLoggedIn, async (req, res, next) => {
     const user= req.user;
     return res.json(user);
+});
+
+router.get('/:id', async(req, res, next) => {
+    try {
+        const user = await db.User.findOne({
+            where:{id:parseInt(req.params.id, 10)},
+            attributes: ['id', 'nickname'],
+            include : [{
+                model : db.Post,
+                attributes:['id'],
+            },{
+                model : db.User,
+                as : 'Followings',
+                attributes : ['id'],
+            },{
+                model : db.User,
+                as : 'Followers',
+                attributes : ['id'],
+            }],
+        });
+
+        res.json(user);
+    }catch(err){
+        console.error(err);
+    }
 })
 
 router.post('/', async (req, res, next) => {
@@ -203,6 +228,47 @@ router.get('/:id/followers', isLoggedIn, async (req,res,next) => {
         console.error(e);
         next(e);
     }    
+});
+
+router.get('/:id/posts', async (req, res, next) =>{
+    try{
+        console.log("req.params.id" , req.params.id);
+        let where = {
+            UserId: parseInt(req.params.id, 10),
+            RetweetId: null,
+          };
+        if(parseInt(req.query.lastId , 10)) {
+            where[db.Sequelize.Op.lt] = parseInt(req.query.lastId , 10); //lt:미만, lte:이하, gt:초과,gte:이하, ne:불일치
+        }
+        const posts = await db.Post.findAll({
+            where,
+            include:[{
+                model : db.User,
+                attributes:['id', 'nickname'],
+            },{
+                model : db.Image,
+            },{
+                model : db.User,
+                as : 'Likers',
+                attributes : ['id'],
+            },{
+                model : db.Post,
+                as : 'Retweet',
+                include:[{
+                    model : db.User,
+                    attributes:['id', 'nickname'],
+                }, {
+                    model : db.Image,
+                }]                
+            }],
+            order : [['createdAt', 'DESC']],
+            limit : parseInt(req.query.limit, 10) || 10,
+        })
+        res.json(posts);
+    }catch(err) {
+        console.error(err);
+        next(err);
+    }
 });
 
 router.delete('/:id/follower', isLoggedIn, async (req,res,next) => {
