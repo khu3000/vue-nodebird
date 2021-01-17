@@ -1,4 +1,5 @@
-//import throttle from 'lodash.throttle';
+import throttle from 'lodash.throttle';
+
 export const state = () =>({
     mainPosts:[],
     hasMorePost : true, //다음 데이터가 있는 경우 true
@@ -26,7 +27,6 @@ export const mutations = {
         state.mainPosts[index].comments = payload;
     },
     loadPosts(state, payload){
-        console.log('mutations loadPosts' + payload);
         state.mainPosts = state.mainPosts.concat(payload);
         state.hasMorePost = payload.length === limit;
     },
@@ -99,18 +99,20 @@ export const actions = {
             console.error(err);
         })
     },
-    async loadPosts({commit, state}, payload){
+    loadPosts : throttle(async function({commit, state}, payload){
+ 
         if(state.hasMorePost){
-            await this.$axios.get(`/posts?offset=${state.mainPosts.length}&limit=10`)
+            const lastPost = state.mainPosts[state.mainPosts.length -1];
+            const res = await this.$axios.get(`/posts?lastId=${lastPost && lastPost.id}&limit=10`)
             .then((res)=>{
                 commit('loadPosts', res.data);
+                return;
             })
             .catch((err) => {
-                console.log("loadPosts action catch");
                 console.error(err);
             });
         }
-    },
+    }, 3000),
 
     uploadImages({commit}, payload){
         this.$axios.post('/post/images', payload, {
