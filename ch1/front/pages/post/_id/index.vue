@@ -10,9 +10,9 @@
 <script>
     import PostCard from '~/components/PostCard';
     export default {
-        // fetch(){
-        
-        // },
+        fetch({store, params}){
+            return store.dispatch('posts/loadPost', params.id);
+        },
         // asyncData(){
 
         // },
@@ -21,6 +21,7 @@
         },
         computed:{
             post() {
+                //console.log("this.$store.state.posts.mainPosts", this.$store.state.posts.mainPosts, this.$route.params.id);
                 return this.$store.state.posts.mainPosts.find(
                     v => v.id === parseInt(this.$route.params.id, 10)
                 );

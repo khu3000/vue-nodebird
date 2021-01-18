@@ -26,6 +26,9 @@ export const mutations = {
         const index = state.mainPosts.findIndex(v=>v.id === payload.postId);
         state.mainPosts[index].comments = payload;
     },
+    loadPost(state, payload){
+        state.mainPosts = [payload.data];
+    },
     loadPosts(state, payload){
         if(payload.reset){
             state.mainPosts = payload.data;
@@ -102,6 +105,18 @@ export const actions = {
         .catch((err) => {
             console.error(err);
         })
+    },
+    async loadPost({commit, state}, payload){
+        try{
+            const res = await this.$axios.get(`/post/${payload}`)
+            commit('loadPost', {
+                data : res.data
+            });
+            return;
+        }catch(e){
+            console.error(e);
+        }
+
     },
     loadPosts : throttle(async function({commit, state}, payload){
         try{

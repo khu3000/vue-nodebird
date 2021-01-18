@@ -216,6 +216,37 @@ router.post('/:id/like', isLoggedIn, async(req,res,next) => {
     }
 });
 
+router.get('/:id', async(req, res, next) => {
+    try{
+        const post = await db.Post.findOne({
+            where : { id: req.params.id },
+            include:[{
+                model : db.User,
+                attributes:['id', 'nickname'],
+            },{
+                model : db.Image,
+            },{
+                model : db.User,
+                as : 'Likers',
+                attributes : ['id'],
+            },{
+                model : db.Post,
+                as : 'Retweet',
+                include:[{
+                    model : db.User,
+                    attributes:['id', 'nickname'],
+                }, {
+                    model : db.Image,
+                }]                
+            }],
+        })
+        res.json(post);
+    }catch(e){
+        console.error(e);
+        next(e);
+    }
+});
+
 router.delete('/:id/like', isLoggedIn, async(req,res,next) => {
     try{
         const post = await db.Post.findOne({ where :{id:req.params.id}}) ;
